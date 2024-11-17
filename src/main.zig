@@ -106,29 +106,31 @@ fn select(db: Sqlite3) !void {
 
     try sql.bind(1, i32, 1);
 
-    var row = try sql.step();
-    assert(null != row);
+    var opt_row = try sql.step();
+    assert(null != opt_row);
 
-    const c_integer = row.?.column(0, i32);
+    const row = opt_row.?;
+
+    const c_integer = row.column(0, i32);
     assert(42 == c_integer);
 
-    const c_real = row.?.column(1, f32);
+    const c_real = row.column(1, f32);
     assert(3.14 == c_real);
 
-    const c_numeric = row.?.column(2, i17);
+    const c_numeric = row.column(2, i17);
     assert(0xCAFE == c_numeric);
 
-    const c_blob = row.?.columnBlobPtr(3);
+    const c_blob = row.columnBlobPtr(3);
     assert(std.mem.eql(u8, &[_]u8{ 0xBA, 0xBE }, c_blob));
 
-    const c_text = row.?.columnTextPtr(4);
+    const c_text = row.columnTextPtr(4);
     assert(std.mem.eql(u8, "The name", c_text));
 
-    const c_null_type = try row.?.columnType(5);
+    const c_null_type = try row.columnType(5);
     assert(.null == c_null_type);
 
-    row = try sql.step();
-    assert(null == row);
+    opt_row = try sql.step();
+    assert(null == opt_row);
 }
 
 fn selectNames(db: Sqlite3, alloc: std.mem.Allocator) !std.ArrayList([]const u8) {
