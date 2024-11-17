@@ -1,0 +1,15 @@
+.{
+    .name = "zsqlite-demo",
+    .version = "0.0.0",
+    .dependencies = .{
+        .zsqlite = .{
+            .url = "https://github.com/thiago-negri/zsqlite/archive/refs/heads/master.zip",
+            .hash = "1220b77a95d5172c32689f95b9f830ffbcd4a5f168ca55baa932cc6085435600accb",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}
