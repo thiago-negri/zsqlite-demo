@@ -63,7 +63,7 @@ fn select(db: Sqlite3, alloc: std.mem.Allocator) !std.ArrayList([]const u8) {
     const sql =
         \\SELECT name
         \\ FROM codebases
-        \\ WHERE belong_to = 'us';
+        \\ WHERE belong_to = ?;
     ;
 
     const stmt = stmt: {
@@ -71,6 +71,8 @@ fn select(db: Sqlite3, alloc: std.mem.Allocator) !std.ArrayList([]const u8) {
         break :stmt try db.prepare(sql);
     };
     defer stmt.deinit();
+
+    try stmt.bindText(1, "us");
 
     var names = std.ArrayList([]const u8).init(alloc);
     errdefer {
