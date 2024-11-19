@@ -4,7 +4,7 @@
     .dependencies = .{
         .zsqlite = .{
             .url = "https://github.com/thiago-negri/zsqlite/archive/refs/heads/master.zip",
-            .hash = "1220b55d5b03680cb3fed8073a7b9d5a2a8c7064bc0d2dd20fb9836e2094f3d6d17f",
+            .hash = "1220d510518a9f3d045b28276bd594fd82eccaa2b2496b5d5a11e121046410a58411",
         },
     },
     .paths = .{

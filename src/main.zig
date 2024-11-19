@@ -78,9 +78,13 @@ fn insert(db: Sqlite3) !void {
     );
     defer sql_insert_alltypes.deinit();
 
-    try sql_insert_alltypes.bind(1, i32, 42);
-    try sql_insert_alltypes.bind(2, f32, 3.14);
-    try sql_insert_alltypes.bind(3, i17, 0xCAFE);
+    const answer: i32 = 42;
+    const pi: f32 = 3.14;
+    const drink: i17 = 0xCAFE;
+
+    try sql_insert_alltypes.bind(1, answer);
+    try sql_insert_alltypes.bind(2, pi);
+    try sql_insert_alltypes.bind(3, drink);
     try sql_insert_alltypes.bindBlob(4, &[_]u8{ 0xBA, 0xBE });
     try sql_insert_alltypes.bindText(5, "The name");
     try sql_insert_alltypes.bindNull(6);
@@ -104,7 +108,7 @@ fn select(db: Sqlite3) !void {
     );
     defer sql.deinit();
 
-    try sql.bind(1, i32, 1);
+    try sql.bind(1, 1);
 
     var opt_row = try sql.step();
     assert(null != opt_row);
