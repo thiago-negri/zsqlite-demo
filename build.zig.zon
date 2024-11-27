@@ -8,7 +8,7 @@
         },
         .@"zsqlite-migrate" = .{
             .url = "https://github.com/thiago-negri/zsqlite-migrate/archive/refs/heads/master.zip",
-            .hash = "12208952498cc3d6b868303834171b8b6d8f667e2ab86c234d9a46e0b3c3324fe4d7",
+            .hash = "12204b8548ef7d88f34309908d65c0a2c22680ae7fb89af7125a346dd5c7a4f0e868",
         },
     },
     .paths = .{
