@@ -16,6 +16,7 @@ pub fn main() !void {
         return err;
     };
     defer db.deinit();
+    errdefer db.printError("oops");
 
     // Apply migrations.
     try migrate(db.sqlite3);
