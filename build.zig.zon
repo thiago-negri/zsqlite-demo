@@ -6,6 +6,10 @@
             .url = "https://github.com/thiago-negri/zsqlite/archive/refs/heads/master.zip",
             .hash = "1220d510518a9f3d045b28276bd594fd82eccaa2b2496b5d5a11e121046410a58411",
         },
+        .@"zsqlite-migrate" = .{
+            .url = "https://github.com/thiago-negri/zsqlite-migrate/archive/refs/heads/master.zip",
+            .hash = "1220d9efdcef54926332472494a58d659ef82266a1f712e2db1b47c7229285a1ddbe",
+        },
     },
     .paths = .{
         "build.zig",

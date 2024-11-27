@@ -1,5 +1,6 @@
 const std = @import("std");
 const Sqlite3 = @import("zsqlite").Sqlite3;
+const migrate = @import("zsqlite-migrate").migrate;
 
 const print = std.debug.print;
 const GPA = std.heap.GeneralPurposeAllocator(.{});
@@ -15,6 +16,9 @@ pub fn main() !void {
         return err;
     };
     defer db.deinit();
+
+    // Apply migrations.
+    try migrate(db.sqlite3);
 
     // Create a table.
     try createTables(db);
@@ -37,13 +41,6 @@ pub fn main() !void {
 }
 
 fn createTables(db: Sqlite3) !void {
-    const ddl_codebases =
-        \\CREATE TABLE codebases (
-        \\  id INT PRIMARY KEY,
-        \\  name CHAR NOT NULL,
-        \\  belong_to CHAR(2) NOT NULL
-        \\);
-    ;
     const ddl_alltypes =
         \\CREATE TABLE alltypes (
         \\ c_integer INTEGER,
@@ -55,7 +52,6 @@ fn createTables(db: Sqlite3) !void {
         \\);
     ;
     errdefer db.printError("Failed to create table");
-    try db.exec(ddl_codebases);
     try db.exec(ddl_alltypes);
 }
 
