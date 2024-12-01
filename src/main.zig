@@ -19,7 +19,7 @@ pub fn main() !void {
     errdefer db.printError("oops");
 
     // Apply migrations.
-    try migrate(db.sqlite3);
+    try migrate(db.sqlite3, .{ .emit_debug = true });
 
     // Create a table.
     try createTables(db);

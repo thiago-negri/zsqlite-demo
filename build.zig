@@ -18,7 +18,14 @@ pub fn build(b: *std.Build) void {
 
     // Add SQLite Migrate
     // All files within ./migrations/ will be embedded in the executable
-    const zsqlite_migrate = b.dependency("zsqlite-migrate", .{ .target = target, .optimize = optimize, .migration_root_path = @as([]const u8, "./migrations/") });
+    // zig fmt: off
+    const zsqlite_migrate = b.dependency("zsqlite-migrate", .{
+        .target = target,
+        .optimize = optimize,
+        .migration_root_path = @as([]const u8, "./migrations/"),
+        .minify_sql = true
+    });
+    // zig fmt: on
     const zsqlite_migrate_module = zsqlite_migrate.module("zsqlite-migrate");
     exe.root_module.addImport("zsqlite-migrate", zsqlite_migrate_module);
 
