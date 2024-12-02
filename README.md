@@ -1,7 +1,9 @@
 # zsqlite-demo
 
-Demo of [zsqlite](https://github.com/thiago-negri/zsqlite) and
-[zsqlite-migrate](https://github.com/thiago-negri/zsqlite-migrate).
+Demo of:
+- [zsqlite](https://github.com/thiago-negri/zsqlite)
+- [zsqlite-migrate](https://github.com/thiago-negri/zsqlite-migrate)
+- [zsqlite-minify](https://github.com/thiago-negri/zsqlite-minify)
 
 
 ## Run
