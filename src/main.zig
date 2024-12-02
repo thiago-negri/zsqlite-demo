@@ -1,6 +1,11 @@
 const std = @import("std");
-const Sqlite3 = @import("zsqlite").Sqlite3;
+const zsqlite = @import("zsqlite");
 const migrate = @import("zsqlite-migrate").migrate;
+const embedMinifiedSql = @import("zsqlite-minify").embedMinifiedSql;
+
+const Sqlite3 = zsqlite.Sqlite3;
+const Row = zsqlite.Row;
+const StatementIterator = zsqlite.StatementIterator;
 
 const print = std.debug.print;
 const GPA = std.heap.GeneralPurposeAllocator(.{});
@@ -39,6 +44,9 @@ pub fn main() !void {
         print("{s}", .{name});
     }
     print(" belong to us!\n", .{});
+
+    // Show case iterators, and embedded minified SQLs.
+    try iterators(db);
 }
 
 fn createTables(db: Sqlite3) !void {
@@ -164,4 +172,36 @@ fn selectNames(db: Sqlite3, alloc: std.mem.Allocator) !std.ArrayList([]const u8)
     }
 
     return names;
+}
+
+const IterRow = struct {
+    id: i64,
+    name: []const u8,
+
+    pub fn init(row: Row) IterRow {
+        const id = row.column(0, i64);
+        const name = row.columnTextPtr(1);
+        return IterRow{
+            .id = id,
+            .name = name,
+        };
+    }
+};
+
+const IterStmt = StatementIterator(IterRow, IterRow.init, embedMinifiedSql("./src/sqls/iter/select.sql"));
+
+fn iterators(db: Sqlite3) !void {
+    const create_sql = comptime embedMinifiedSql("./src/sqls/iter/create.sql");
+    std.debug.print("The embedded SQL: ", .{});
+    std.debug.print(create_sql, .{}); // notice it's comptime!
+    std.debug.print("\n", .{});
+
+    try db.exec(create_sql);
+    try db.exec(embedMinifiedSql("./src/sqls/iter/seed.sql"));
+
+    const iter = try IterStmt.prepare(db);
+    defer iter.deinit();
+    while (try iter.next()) |typed_row| {
+        std.debug.print("Typed Row: {d} - {s}\n", .{ typed_row.id, typed_row.name });
+    }
 }
