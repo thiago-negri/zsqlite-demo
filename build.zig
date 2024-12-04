@@ -18,26 +18,23 @@ pub fn build(b: *std.Build) void {
 
     // Add SQLite Migrate
     // All files within ./migrations/ will be embedded in the executable
-    // zig fmt: off
     const zsqlite_migrate = b.dependency("zsqlite-migrate", .{
         .target = target,
         .optimize = optimize,
         .migration_root_path = @as([]const u8, "./migrations/"),
-        .minify_sql = true
+        .minify_sql = true,
     });
-    // zig fmt: on
     const zsqlite_migrate_module = zsqlite_migrate.module("zsqlite-migrate");
     exe.root_module.addImport("zsqlite-migrate", zsqlite_migrate_module);
 
     // Add SQL Minify
     // All files within ./src/sqls will be embedded in the executable
-    // zig fmt: off
     const zsqlite_minify = b.dependency("zsqlite-minify", .{
         .target = target,
         .optimize = optimize,
-        .minify_root_path = @as([]const u8, "./src")
+        .minify_root_path = @as([]const u8, "./src/sqls/"),
+        .minify_files_prefix = @as([]const u8, "sqls"),
     });
-    // zig fmt: on
     const zsqlite_minify_module = zsqlite_minify.module("zsqlite-minify");
     exe.root_module.addImport("zsqlite-minify", zsqlite_minify_module);
 
