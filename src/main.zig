@@ -188,16 +188,16 @@ const IterRow = struct {
     }
 };
 
-const IterStmt = StatementIterator(IterRow, IterRow.init, embedMinifiedSql("./src/sqls/iter/select.sql"));
+const IterStmt = StatementIterator(IterRow, IterRow.init, embedMinifiedSql("sqls/iter/select.sql"));
 
 fn iterators(db: Sqlite3) !void {
-    const create_sql = comptime embedMinifiedSql("./src/sqls/iter/create.sql");
+    const create_sql = comptime embedMinifiedSql("sqls/iter/create.sql");
     std.debug.print("The embedded SQL: ", .{});
     std.debug.print(create_sql, .{}); // notice it's comptime!
     std.debug.print("\n", .{});
 
     try db.exec(create_sql);
-    try db.exec(embedMinifiedSql("./src/sqls/iter/seed.sql"));
+    try db.exec(embedMinifiedSql("sqls/iter/seed.sql"));
 
     const iter = try IterStmt.prepare(db);
     defer iter.deinit();

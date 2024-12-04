@@ -8,11 +8,11 @@
         },
         .@"zsqlite-migrate" = .{
             .url = "https://github.com/thiago-negri/zsqlite-migrate/archive/refs/heads/master.zip",
-            .hash = "1220fb18fbbdc98584f40508a42d1add6873bf75db449dfe9e14850a4d7a02c56a58",
+            .hash = "1220b2bc4da63d1d646e2ffded311c05e9191599280cff797a35c453f3763580c2a9",
         },
         .@"zsqlite-minify" = .{
             .url = "https://github.com/thiago-negri/zsqlite-minify/archive/refs/heads/master.zip",
-            .hash = "1220ed25f061ae68e6b7fa7536c85b639088f0eda63db6a26afb36ac430f137822be",
+            .hash = "122090618d2d54f20646c5b97dccba68d6f25186ad44058d45df97388ef909b4440c",
         },
     },
     .paths = .{
