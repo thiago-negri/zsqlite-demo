@@ -16,7 +16,10 @@ pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(gpa.allocator());
     defer arena.deinit();
 
-    const db = Sqlite3.init(":memory:") catch |err| {
+    var db = Sqlite3.init(":memory:", .{
+        // Allocator is only required if track_open_statements is set to true
+        .alloc = gpa.allocator(),
+    }) catch |err| {
         print("Failed to connect to SQLite", .{});
         return err;
     };
@@ -27,16 +30,16 @@ pub fn main() !void {
     try migrate(db.sqlite3, .{ .emit_debug = true });
 
     // Create a table.
-    try createTables(db);
+    try createTables(&db);
 
     // Insert some.
-    try insert(db);
+    try insert(&db);
 
     // Select all types.
-    try select(db);
+    try select(&db);
 
     // Select some.
-    const names = try selectNames(db, arena.allocator());
+    const names = try selectNames(&db, arena.allocator());
 
     // Print results.
     print("All your codebases ", .{});
@@ -46,10 +49,10 @@ pub fn main() !void {
     print(" belong to us!\n", .{});
 
     // Show case iterators, and embedded minified SQLs.
-    try iterators(db);
+    try iterators(&db);
 }
 
-fn createTables(db: Sqlite3) !void {
+fn createTables(db: *Sqlite3) !void {
     const ddl_alltypes =
         \\CREATE TABLE alltypes (
         \\ c_integer INTEGER,
@@ -64,12 +67,13 @@ fn createTables(db: Sqlite3) !void {
     try db.exec(ddl_alltypes);
 }
 
-fn insert(db: Sqlite3) !void {
+fn insert(db: *Sqlite3) !void {
     errdefer db.printError("Failed to insert rows");
 
     const names: [3][]const u8 = .{ "a", "r", "e" };
     const sql_insert_codebases = "INSERT INTO codebases (name, belong_to) VALUES (?, ?);";
     const stmt = try db.prepare(sql_insert_codebases);
+    defer stmt.deinit();
     try stmt.bindText(2, "us");
     for (names) |name| {
         try stmt.bindText(1, name);
@@ -96,7 +100,7 @@ fn insert(db: Sqlite3) !void {
     try sql_insert_alltypes.exec();
 }
 
-fn select(db: Sqlite3) !void {
+fn select(db: *Sqlite3) !void {
     errdefer db.printError("Failed to select alltypes");
 
     const assert = std.debug.assert;
@@ -142,7 +146,7 @@ fn select(db: Sqlite3) !void {
     assert(null == opt_row);
 }
 
-fn selectNames(db: Sqlite3, alloc: std.mem.Allocator) !std.ArrayList([]const u8) {
+fn selectNames(db: *Sqlite3, alloc: std.mem.Allocator) !std.ArrayList([]const u8) {
     const sql =
         \\SELECT name
         \\ FROM codebases
@@ -190,7 +194,7 @@ const IterRow = struct {
 
 const IterStmt = StatementIterator(IterRow, IterRow.init, embedMinifiedSql("sqls/iter/select.sql"));
 
-fn iterators(db: Sqlite3) !void {
+fn iterators(db: *Sqlite3) !void {
     const create_sql = comptime embedMinifiedSql("sqls/iter/create.sql");
     std.debug.print("The embedded SQL: ", .{});
     std.debug.print(create_sql, .{}); // notice it's comptime!
